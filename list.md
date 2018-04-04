@@ -231,3 +231,68 @@ def flatten(xs: List[Any]): List[Any] =
   }
 ```
 
+## 08 (**) Eliminate consecutive duplicates of list elements.
+
+If a list contains repeated elements they should be replaced with a single copy of the element. The order of the elements should not be changed.
+
+Example:
+
+```Scala
+scala> compress(List('a, 'a, 'a, 'a, 'b, 'c, 'c, 'a, 'a, 'd, 'e, 'e, 'e, 'e))
+res0: List[Symbol] = List('a, 'b, 'c, 'a, 'd, 'e)
+```
+
+简单递归：
+
+```Scala
+def compress[A](xs: List[A]): List[A] =
+  xs match {
+    case Nil      ⇒ Nil
+    case hd :: tl ⇒ {
+      val ans = compress(tl)
+      if (!ans.isEmpty && ans.head == hd) ans
+      else hd :: ans
+    }
+  }
+
+def compress[A](xs: List[A]): List[A] =
+  xs match {
+    case Nil      ⇒ Nil
+    case hd :: tl ⇒ hd :: compress(xs.dropWhile(_ == hd))
+  }
+```
+
+尾递归：
+
+```Scala
+def compress[A](xs: List[A]): List[A] = {
+  def aux(result: List[A], xs: List[A]): List[A] =
+    (result, xs) match {
+      case (r, Nil)                   ⇒ r.reverse
+      case (h :: t, x :: l) if h == x ⇒ aux(h :: t, l)
+      case (r, x :: l)                ⇒ aux(x :: r, l)
+    }
+
+  aux(Nil, xs)
+}
+
+def compress[A](xs: List[A]): List[A] = {
+  def aux(result: List[A], xs: List[A]): List[A] =
+    (result, xs) match {
+      case (r, Nil)     ⇒ r.reverse
+      case (r, x :: l)  ⇒ aux(x :: r, l.dropWhile(_ == x))
+    }
+
+  aux(Nil, xs)
+}
+```
+
+纯函数式：
+
+```Scala
+def compress[A](xs: List[A]): List[A] =
+  xs.foldRight(List.empty[A]) {
+    case (x, hd :: tl) if x == hd ⇒ hd :: tl
+    case (x, r)                   ⇒ x :: r
+  }
+```
