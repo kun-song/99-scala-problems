@@ -37,3 +37,29 @@ def last[A](xs: List[A]): A =
   else
     last(xs.tail)
 ```
+
+## 02 (*) Find the last but one element of a list.
+
+示例：
+
+```
+scala> penultimate(List(1, 1, 2, 3, 5, 8))
+res0: Int = 5
+```
+
+模式匹配：
+
+```Scala
+def penultimate[A](xs: List[A]): A =
+  xs match {
+    case Nil | _ :: Nil ⇒ throw new NoSuchElementException
+    case x :: _ :: Nil  ⇒ x
+    case _ :: tl        ⇒ penultimate(tl)
+  }
+```
+
+内置函数 `init` 和 `last`：
+
+```Scala
+def penultimate[A](xs: List[A]): A = xs.init.last
+```
