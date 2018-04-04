@@ -42,7 +42,7 @@ def last[A](xs: List[A]): A =
 
 Example:
 
-```
+```Scala
 scala> penultimate(List(1, 1, 2, 3, 5, 8))
 res0: Int = 5
 ```
@@ -70,7 +70,7 @@ By convention, the first element in the list is element 0.
 
 Example:
 
-```
+```Scala
 scala> nth(2, List(1, 1, 2, 3, 5, 8))
 res0: Int = 2
 ```
@@ -104,7 +104,7 @@ def nth[A](n: Int, xs: List[A]): A =
 
 Example:
 
-```
+```Scala
 scala> length(List(1, 1, 2, 3, 5, 8))
 res0: Int = 6
 ```
@@ -148,4 +148,52 @@ def length[A](xs: List[A]): Int =
 ```Scala
 def length[A](xs: List[A]): Int =
   xs.length
+```
+
+## 05 (*) Reverse a list.
+
+Example:
+
+```Scala
+scala> reverse(List(1, 1, 2, 3, 5, 8))
+res0: List[Int] = List(8, 5, 3, 2, 1, 1)
+```
+
+简单递归：
+
+```Scala
+def reverse[A](xs: List[A]): List[A] =
+  xs match {
+    case Nil      ⇒ Nil
+    case hd :: tl ⇒ reverse(tl) :+ hd
+  }
+```
+
+尾递归：
+
+```Scala
+def reverse[A](xs: List[A]): List[A] = {
+  @tailrec
+  def aux(result: List[A], xs: List[A]): List[A] =
+    xs match {
+      case Nil      ⇒ result
+      case hd :: tl ⇒ aux(hd :: result, tl)
+    }
+
+  aux(Nil, xs)
+}
+```
+
+纯函数式（`fold`）：
+
+```Scala
+def reverse[A](xs: List[A]): List[A] =
+  xs.foldLeft(List.empty[A])((l, x) ⇒ x :: l)
+```
+
+内置函数：
+
+```Scala
+def reverse[A](xs: List[A]): List[A] =
+  xs.reverse
 ```
