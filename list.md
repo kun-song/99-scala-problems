@@ -122,8 +122,6 @@ def length[A](xs: List[A]): Int =
 尾递归：
 
 ```Scala
-import scala.annotation.tailrec
-
 def length[A](xs: List[A]): Int = {
   @tailrec
   def aux(n: Int, xs: List[A]): Int =
@@ -197,3 +195,39 @@ def reverse[A](xs: List[A]): List[A] =
 def reverse[A](xs: List[A]): List[A] =
   xs.reverse
 ```
+
+## 06 (*) Find out whether a list is a palindrome.
+
+Example:
+
+```Scala
+scala> isPalindrome(List(1, 2, 3, 2, 1))
+res0: Boolean = true
+```
+
+简单实现：
+
+```Scala
+def isPalindrome[A](xs: List[A]): Boolean =
+  xs == xs.reverse
+```
+
+## 07 (**) Flatten a nested list structure.
+
+Example:
+
+```Scala
+scala> flatten(List(List(1, 1), 2, List(3, List(5, 8))))
+res0: List[Any] = List(1, 1, 2, 3, 5, 8)
+```
+
+使用 `flatMap`：
+
+```Scala
+def flatten(xs: List[Any]): List[Any] =
+  xs.flatMap {
+    case l: List[_] ⇒ l
+    case x          ⇒ x :: Nil
+  }
+```
+
