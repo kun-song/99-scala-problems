@@ -326,13 +326,13 @@ def pack[A](xs: List[A]): List[List[A]] =
 
 ```Scala
 def pack[A](xs: List[A]): List[List[A]] =
-  xs.foldLeft(List.empty[List[A]]) {
-    case (l :: tl, x) if x == l.head ⇒ (x :: l) +: tl
-    case (ll, x)                     ⇒ (x :: Nil) +: ll
+  xs.foldRight(List.empty[List[A]]) {
+    case (x, l :: tl) if x == l.head ⇒ (x :: l) +: tl
+    case (x, ll)                     ⇒ (x :: Nil) +: ll
   }
 ```
 
-## P10 (*) Run-length encoding of a list.
+## 10 (*) Run-length encoding of a list.
 
 Use the result of problem P09 to implement the so-called run-length encoding data compression method. Consecutive duplicates of elements are encoded as tuples (N, E) where N is the number of duplicates of the element E.
 
@@ -349,3 +349,35 @@ res0: List[(Int, Symbol)] = List((4,'a), (1,'b), (2,'c), (2,'a), (1,'d), (4,'e))
 def encode[A](xs: List[A]): List[(Int, A)] =
   pack(xs) map (l ⇒ (l.size, l.head))
 ```
+
+## 11 (*) Modified run-length encoding.
+
+Modify the result of problem P10 in such a way that if an element has no duplicates it is simply copied into the result list. Only elements with duplicates are transferred as (N, E) terms.
+
+Example:
+
+```Scala
+scala> encodeModified(List('a, 'a, 'a, 'a, 'b, 'c, 'c, 'a, 'a, 'd, 'e, 'e, 'e, 'e))
+res0: List[Any] = List((4,'a), 'b, (2,'c), (2,'a), 'd, (4,'e))
+```
+
+基于 `pack`：
+
+```Scala
+def encodeModified[A](xs: List[A]): List[Any] =
+  pack(xs) map {
+    case x :: Nil ⇒ x
+    case l        ⇒ (l.size, l.head)
+  }
+```
+
+基于 `encode`：
+
+```Scala
+def encodeModified[A](xs: List[A]): List[Any] =
+  encode(xs) map {
+    case l if l._1 == 1 ⇒ l._2
+    case l              ⇒ l
+  }
+```
+
