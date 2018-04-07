@@ -296,3 +296,38 @@ def compress[A](xs: List[A]): List[A] =
     case (x, r)                   ⇒ x :: r
   }
 ```
+
+## 09 (**) Pack consecutive duplicates of list elements into sublists.
+
+If a list contains repeated elements they should be placed in separate sublists.
+
+Example:
+
+```Scala
+scala> pack(List('a, 'a, 'a, 'a, 'b, 'c, 'c, 'a, 'a, 'd, 'e, 'e, 'e, 'e))
+res0: List[List[Symbol]] = List(List('a, 'a, 'a, 'a), List('b), List('c, 'c), List('a, 'a), List('d), List('e, 'e, 'e, 'e))
+```
+
+模式匹配：
+
+```Scala
+def pack[A](xs: List[A]): List[List[A]] =
+  xs match {
+    case Nil      ⇒ Nil
+    case hd :: tl ⇒
+      pack(tl) match {
+        case t :: l if t.head == hd ⇒ (hd :: t) :: l
+        case l                      ⇒ (hd :: Nil) :: l
+      }
+  }
+```
+
+使用 `fold`：
+
+```Scala
+def pack[A](xs: List[A]): List[List[A]] =
+  xs.foldLeft(List.empty[List[A]]) {
+    case (l :: tl, x) if x == l.head ⇒ (x :: l) +: tl
+    case (ll, x)                     ⇒ (x :: Nil) +: ll
+  }
+```
