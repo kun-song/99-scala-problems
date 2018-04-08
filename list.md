@@ -465,3 +465,72 @@ def duplicate[A](xs: List[A]): List[A] =
     x ⇒ x :: x :: Nil
   }
 ```
+
+## 15 (**) Duplicate the elements of a list a given number of times.
+
+Example:
+
+```Scala
+scala> duplicateN(3, List('a, 'b, 'c, 'c, 'd))
+res0: List[Symbol] = List('a, 'a, 'a, 'b, 'b, 'b, 'c, 'c, 'c, 'c, 'c, 'c, 'd, 'd, 'd)
+```
+
+`flatMap` + `List.fill`：
+
+```Scala
+def duplicateN[A](n: Int, xs: List[A]): List[A] =
+  xs flatMap {
+    x ⇒ List.fill(n)(x)
+  }
+```
+
+## 16 (**) Drop every Nth element from a list.
+
+Example:
+
+```Scala
+scala> drop(3, List('a, 'b, 'c, 'd, 'e, 'f, 'g, 'h, 'i, 'j, 'k))
+res0: List[Symbol] = List('a, 'b, 'd, 'e, 'g, 'h, 'j, 'k)
+```
+
+普通递归：
+
+```Scala
+def drop[A](n: Int, xs: List[A]): List[A] = {
+  def aux(i: Int, xs: List[A]): List[A] =
+    (i, xs) match {
+      case (_, Nil)                   ⇒ Nil
+      case (c, _ :: tl) if c % n == 0 ⇒ aux(i + 1, tl)
+      case (_, x :: tl)               ⇒ x :: aux(i + 1, tl)
+    }
+
+  aux(1, xs)
+}
+```
+
+尾递归：
+
+```Scala
+def drop[A](n: Int, xs: List[A]): List[A] = {
+  @tailrec
+  def aux(i: Int, xs: List[A], result: List[A]): List[A] =
+    (i, xs) match {
+      case (_, Nil)                   ⇒ result.reverse
+      case (c, _ :: tl) if c % n == 0 ⇒ aux(i + 1, tl, result)
+      case (_, x :: tl)               ⇒ aux(i + 1, tl, x :: result)
+    }
+
+  aux(1, xs, Nil)
+}
+```
+
+`zip` + `unzip`:
+
+```Scala
+def drop[A](n: Int, xs: List[A]): List[A] =
+  (xs zip (Stream from 1) filter {
+    case (_, i) ⇒ i % n != 0
+  }).unzip _1
+```
+
+
