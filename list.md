@@ -581,3 +581,54 @@ def split[A](n: Int, xs: List[A]): (List[A], List[A]) =
 def split[A](n: Int, xs: List[A]): (List[A], List[A]) =
   xs.splitAt(n)
 ```
+
+## 18 (**) Extract a slice from a list.
+
+Given two indices, I and K, the slice is the list containing the elements from and including the Ith element up to but not including the Kth element of the original list. Start counting the elements with 0.
+
+Example:
+
+```Scala
+scala> slice(3, 7, List('a, 'b, 'c, 'd, 'e, 'f, 'g, 'h, 'i, 'j, 'k))
+res0: List[Symbol] = List('d, 'e, 'f, 'g)
+```
+
+普通递归：
+
+```Scala
+def slice[A](begin: Int, end: Int, xs: List[A]): List[A] =
+  (begin, end, xs) match {
+    case (b, e, _ :: tl) if b > 0 && e > 0 ⇒ slice(b - 1, e - 1, tl)
+    case (b, e, hd :: tl) if e > 0         ⇒ hd :: slice(b, e - 1, tl)
+    case _                                 ⇒ Nil
+  }
+```
+
+尾递归：
+
+```Scala
+def slice[A](begin: Int, end: Int, xs: List[A]): List[A] = {
+  def aux(begin: Int, end: Int, xs: List[A], result: List[A]): List[A] =
+    (begin, end, xs) match {
+      case (b, e, _ :: tl) if b > 0 && e > 0 ⇒ aux(b - 1, e - 1, tl, result)
+      case (b, e, hd :: tl) if e > 0         ⇒ aux(b, e - 1, tl, hd :: result)
+      case _                                 ⇒ result.reverse
+    }
+
+  aux(begin, end, xs, Nil)
+}
+```
+
+`drop` + `take`:
+
+```Scala
+def slice[A](begin: Int, end: Int, xs: List[A]): List[A] =
+  xs.drop(begin).take(end - (begin max 0))
+```
+
+内置函数：
+
+```Scala
+def slice[A](begin: Int, end: Int, xs: List[A]): List[A] =
+  xs.slice(begin, end)
+```
