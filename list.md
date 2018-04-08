@@ -428,3 +428,40 @@ def encodeDirect[A](xs: List[A]): List[(Int, A)] =
     case (x, l)                      ⇒ (1, x) :: l
   }
 ```
+
+## 14 (*) Duplicate the elements of a list.
+
+Example:
+
+```Scala
+scala> duplicate(List('a, 'b, 'c, 'c, 'd))
+res0: List[Symbol] = List('a, 'a, 'b, 'b, 'c, 'c, 'c, 'c, 'd, 'd)
+```
+
+模式匹配：
+
+```Scala
+def duplicate[A](xs: List[A]): List[A] =
+  xs match {
+    case Nil  ⇒ Nil
+    case hd :: tl ⇒ hd :: hd :: duplicate(tl)
+  }
+```
+
+`fold`：
+
+```Scala
+def duplicate[A](xs: List[A]): List[A] =
+  xs.foldRight(List.empty[A]) {
+    case (x, l) ⇒ x :: x :: l
+  }
+```
+
+`flatMap`：
+
+```Scala
+def duplicate[A](xs: List[A]): List[A] =
+  xs flatMap {
+    x ⇒ x :: x :: Nil
+  }
+```
