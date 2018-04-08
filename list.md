@@ -443,7 +443,7 @@ res0: List[Symbol] = List('a, 'a, 'b, 'b, 'c, 'c, 'c, 'c, 'd, 'd)
 ```Scala
 def duplicate[A](xs: List[A]): List[A] =
   xs match {
-    case Nil  ⇒ Nil
+    case Nil      ⇒ Nil
     case hd :: tl ⇒ hd :: hd :: duplicate(tl)
   }
 ```
