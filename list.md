@@ -407,3 +407,24 @@ def decode[A](xs: List[(Int, A)]): List[A] =
     case (n, x) ⇒ List.fill(n)(x)
   }
 ```
+
+## 13 (**) Run-length encoding of a list (direct solution).
+
+Implement the so-called run-length encoding data compression method directly. I.e. don't use other methods you've written (like P09's pack); do all the work directly.
+
+Example:
+
+```Scala
+scala> encodeDirect(List('a, 'a, 'a, 'a, 'b, 'c, 'c, 'a, 'a, 'd, 'e, 'e, 'e, 'e))
+res0: List[(Int, Symbol)] = List((4,'a), (1,'b), (2,'c), (2,'a), (1,'d), (4,'e))
+```
+
+答案：
+
+```Scala
+def encodeDirect[A](xs: List[A]): List[(Int, A)] =
+  xs.foldRight(List.empty[(Int, A)]) {
+    case (x, (n, h) :: tl) if x == h ⇒ (n + 1, x) :: tl
+    case (x, l)                      ⇒ (1, x) :: l
+  }
+```
