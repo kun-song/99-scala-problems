@@ -533,4 +533,51 @@ def drop[A](n: Int, xs: List[A]): List[A] =
   }).unzip _1
 ```
 
+## 17 (*) Split a list into two parts.
 
+The length of the first part is given. Use a Tuple for your result.
+
+Example:
+
+```Scala
+scala> split(3, List('a, 'b, 'c, 'd, 'e, 'f, 'g, 'h, 'i, 'j, 'k))
+res0: (List[Symbol], List[Symbol]) = (List('a, 'b, 'c),List('d, 'e, 'f, 'g, 'h, 'i, 'j, 'k))
+```
+
+简单递归：
+
+```Scala
+def split[A](n: Int, xs: List[A]): (List[A], List[A]) =
+  (n, xs) match {
+    case (c, l) if c <= 0 ⇒ (Nil, l)
+    case (c, hd :: tl)    ⇒
+      val (first, second) = split(c - 1, tl)
+      (hd :: first, second)
+  }
+```
+
+尾递归：
+
+```Scala
+def split[A](n: Int, xs: List[A]): (List[A], List[A]) = {
+  @tailrec
+  def aux(n: Int, xs: List[A], first: List[A]): (List[A], List[A]) =
+    (n, xs) match {
+      case (c, l) if c <= 0 ⇒ (first.reverse, l)
+      case (c, hd :: tl)    ⇒ aux(c - 1, tl, hd :: first)
+    }
+```
+
+`take` + `drop`:
+
+```Scala
+def split[A](n: Int, xs: List[A]): (List[A], List[A]) =
+  (xs.take(n), xs.drop(n))
+```
+
+`splitAt`:
+
+```Scala
+def split[A](n: Int, xs: List[A]): (List[A], List[A]) =
+  xs.splitAt(n)
+```
