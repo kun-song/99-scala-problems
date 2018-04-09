@@ -671,3 +671,49 @@ def rotate[A](n: Int, xs: List[A]): List[A] = {
 ```
 
 * `n < 0` 时可转换为 `n + length`
+
+## 20 (*) Remove the Kth element from a list.
+
+Return the list and the removed element in a Tuple. Elements are numbered from 0.
+
+Example:
+
+```Scala
+scala> removeAt(1, List('a, 'b, 'c, 'd))
+res0: (List[Symbol], Symbol) = (List('a, 'c, 'd),'b)
+```
+
+普通递归：
+
+```Scala
+def removeAt[A](n: Int, xs: List[A]): (List[A], A) =
+  (n, xs) match {
+    case (0, h :: t)          ⇒ (t, h)
+    case (i, h :: t) if i > 0 ⇒
+      val (l, x) = removeAt(i - 1, t)
+      (h :: l, x)
+    case _                    ⇒ throw new NoSuchElementException
+  }
+```
+
+尾递归：
+
+```Scala
+def removeAt[A](n: Int, xs: List[A]): (List[A], A) = {
+  def aux(n: Int, xs: List[A], result: List[A]): List[A] =
+    (n, xs) match {
+      case (0, _ :: t)          ⇒ result.reverse ::: t
+      case (i, h :: t) if i > 0 ⇒ aux(i - 1, t, h :: result)
+      case _                    ⇒ throw new NoSuchElementException
+    }
+
+  (aux(n, xs, Nil), xs(n))
+}
+```
+
+`take` + `drop`:
+
+```Scala
+def removeAt[A](n: Int, xs: List[A]): (List[A], A) =
+  (xs.take(n) ::: xs.drop(n + 1), xs(n))
+```
