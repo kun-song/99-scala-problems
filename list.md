@@ -632,3 +632,42 @@ def slice[A](begin: Int, end: Int, xs: List[A]): List[A] =
 def slice[A](begin: Int, end: Int, xs: List[A]): List[A] =
   xs.slice(begin, end)
 ```
+
+## 19 (**) Rotate a list N places to the left.
+
+Examples:
+
+```Scala
+scala> rotate(3, List('a, 'b, 'c, 'd, 'e, 'f, 'g, 'h, 'i, 'j, 'k))
+res0: List[Symbol] = List('d, 'e, 'f, 'g, 'h, 'i, 'j, 'k, 'a, 'b, 'c)
+
+scala> rotate(-2, List('a, 'b, 'c, 'd, 'e, 'f, 'g, 'h, 'i, 'j, 'k))
+res1: List[Symbol] = List('j, 'k, 'a, 'b, 'c, 'd, 'e, 'f, 'g, 'h, 'i)
+```
+
+简单递归：
+
+```Scala
+def rotate[A](n: Int, xs: List[A]): List[A] =
+  (n % xs.length, xs) match {
+    case (_, Nil)        ⇒ Nil
+    case (0, l)          ⇒ l
+    case (c, l) if c < 0 ⇒ l.last :: rotate(n + 1, l.take(l.length - 1))
+    case (c, l) if c > 0 ⇒ rotate(n - 1, l.tail) :+ l.head
+  }
+```
+
+`drop` + `take`:
+
+```Scala
+def rotate[A](n: Int, xs: List[A]): List[A] = {
+  val len = xs.length
+
+  n % len match {
+    case i if i < 0 ⇒ rotate(len + i, xs)
+    case i          ⇒ xs.drop(i) ::: xs.take(i)
+  }
+}
+```
+
+* `n < 0` 时可转换为 `n + length`
