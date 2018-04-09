@@ -745,8 +745,8 @@ def insertAt[A](x: A, n: Int, xs: List[A]): List[A] =
 def insertAt[A](x: A, n: Int, xs: List[A]): List[A] = {
   def aux(n: Int, xs: List[A], result: List[A]): List[A] =
     (n, xs) match {
-      case (0, l)   ⇒ result.reverse ::: (x :: l)
-      case (_, Nil) ⇒ result.reverse :+ x
+      case (0, l)               ⇒ result.reverse ::: (x :: l)
+      case (_, Nil)             ⇒ result.reverse :+ x
       case (i, h :: t) if i > 0 ⇒ aux(i - 1, t, h :: result)
       case _                    ⇒ throw new IndexOutOfBoundsException
     }
@@ -769,4 +769,41 @@ def insertAt[A](x: A, n: Int, xs: List[A]): List[A] =
   xs.splitAt(n) match {
     case (pre, next) ⇒ pre ::: x :: next
   }
+```
+
+## 22 (*) Create a list containing all integers within a given range.
+
+Example:
+
+```Scala
+scala> range(4, 9)
+res0: List[Int] = List(4, 5, 6, 7, 8, 9)
+```
+
+普通递归：
+
+```Scala
+def range(from: Int, to: Int): List[Int] =
+  if (from > to) Nil
+  else from :: range(from + 1, to)
+```
+
+尾递归：
+
+```Scala
+def range(from: Int, to: Int): List[Int] = {
+  @tailrec
+  def aux(i: Int, result: List[Int]): List[Int] =
+    if (i > to) result.reverse
+    else aux(i + 1, i :: result)
+
+  aux(from, Nil)
+}
+```
+
+`Stream`:
+
+```Scala
+def range(begin: Int, end: Int): List[Int] =
+  (Stream from begin) take (end - begin + 1) toList
 ```
