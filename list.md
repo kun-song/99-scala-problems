@@ -717,3 +717,56 @@ def removeAt[A](n: Int, xs: List[A]): (List[A], A) = {
 def removeAt[A](n: Int, xs: List[A]): (List[A], A) =
   (xs.take(n) ::: xs.drop(n + 1), xs(n))
 ```
+
+## 21 (*) Insert an element at a given position into a list.
+
+Example:
+
+```Scala
+scala> insertAt('new, 1, List('a, 'b, 'c, 'd))
+res0: List[Symbol] = List('a, 'new, 'b, 'c, 'd)
+```
+
+普通递归：
+
+```Scala
+def insertAt[A](x: A, n: Int, xs: List[A]): List[A] =
+  (n, xs) match {
+    case (0, l)               ⇒ x :: l
+    case (_, Nil)             ⇒ x :: Nil
+    case (i, h :: t) if i > 0 ⇒ h :: insertAt(x, i - 1, t)
+    case _                    ⇒ throw new IndexOutOfBoundsException
+  }
+```
+
+尾递归：
+
+```Scala
+def insertAt[A](x: A, n: Int, xs: List[A]): List[A] = {
+  def aux(n: Int, xs: List[A], result: List[A]): List[A] =
+    (n, xs) match {
+      case (0, l)   ⇒ result.reverse ::: (x :: l)
+      case (_, Nil) ⇒ result.reverse :+ x
+      case (i, h :: t) if i > 0 ⇒ aux(i - 1, t, h :: result)
+      case _                    ⇒ throw new IndexOutOfBoundsException
+    }
+
+  aux(n, xs, Nil)
+}
+```
+
+`take` + `drop`:
+
+```Scala
+def insertAt[A](x: A, n: Int, xs: List[A]): List[A] =
+  xs.take(n) ::: x :: xs.drop(n)
+```
+
+`splitAt`:
+
+```Scala
+def insertAt[A](x: A, n: Int, xs: List[A]): List[A] =
+  xs.splitAt(n) match {
+    case (pre, next) ⇒ pre ::: x :: next
+  }
+```
