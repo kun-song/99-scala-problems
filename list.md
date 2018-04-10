@@ -871,3 +871,21 @@ def lotto(n: Int, to: Int): List[Int] =
 def lotto(n: Int, to: Int): List[Int] =
   randomSelect(n, List.range(1, to + 1))
 ```
+
+## 25 (*) Generate a random permutation of the elements of a list.
+
+Hint: Use the solution of problem P23.
+
+Example:
+
+```Scala
+scala> randomPermute(List('a, 'b, 'c, 'd, 'e, 'f))
+res0: List[Symbol] = List('b, 'a, 'd, 'c, 'e, 'f)
+```
+
+答案：
+
+```Scala
+def randomPermute[A](xs: List[A]): List[A] =
+  randomSelect(xs.length, xs)
+```
