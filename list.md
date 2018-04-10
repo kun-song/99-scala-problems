@@ -848,3 +848,26 @@ def randomSelect[A](n: Int, xs: List[A]): List[A] = {
   aux(n, xs, Nil)
 }
 ```
+
+## 24 (*) Lotto: Draw N different random numbers from the set 1..M.
+
+Example:
+
+```Scala
+scala> lotto(6, 49)
+res0: List[Int] = List(23, 1, 17, 33, 21, 37)
+```
+
+`randomSelect` + `range`:
+
+```Scala
+def lotto(n: Int, to: Int): List[Int] =
+  randomSelect(n, range(1, to))
+```
+
+`randomSelect` + `List.range`:
+
+```Scala
+def lotto(n: Int, to: Int): List[Int] =
+  randomSelect(n, List.range(1, to + 1))
+```
