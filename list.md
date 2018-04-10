@@ -807,3 +807,44 @@ def range(from: Int, to: Int): List[Int] = {
 def range(begin: Int, end: Int): List[Int] =
   (Stream from begin) take (end - begin + 1) toList
 ```
+
+## 23 (**) Extract a given number of randomly selected elements from a list (Hint: Use the solution to problem P20).
+
+Example:
+
+```Scala
+scala> randomSelect(3, List('a, 'b, 'c, 'd, 'f, 'g, 'h))
+res0: List[Symbol] = List('e, 'd, 'a)
+```
+
+普通递归：
+
+```Scala
+def randomSelect[A](n: Int, xs: List[A]): List[A] =
+  (n, xs) match {
+    case (_, Nil)         ⇒ Nil
+    case (i, _) if i <= 0 ⇒ Nil
+    case (i, l)           ⇒
+      val (tl, x) = removeAt(Random.nextInt(l.length), l)
+      x :: randomSelect(i - 1, tl)
+  }
+```
+
+尾递归：
+
+```Scala
+def randomSelect[A](n: Int, xs: List[A]): List[A] = {
+  @tailrec
+  def aux(n: Int, xs: List[A], result: List[A]): List[A] =
+    (n, xs) match {
+      case (_, Nil)         ⇒ result
+      case (i, _) if i <= 0 ⇒ result
+      case (i, l)           ⇒
+        val r = Random.nextInt(l.length)
+        val (tl, x) = removeAt(r, l)
+        aux(i - 1, tl, x :: result)
+    }
+
+  aux(n, xs, Nil)
+}
+```
