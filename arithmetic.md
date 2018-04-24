@@ -29,5 +29,13 @@ scala> 7.isPrime
 res0: Boolean = true
 ```
 
+`Stream`：
+
+```Scala
+class S99Int(value: Int) {
+  def isPrime: Boolean =
+    (Stream from 2) take Math.sqrt(value).toInt forall (value % _ != 0)
+}
+```
 
 
