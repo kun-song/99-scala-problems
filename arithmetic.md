@@ -136,3 +136,15 @@ scala> 315.primeFactorMultiplicity
 res0: Map[Int,Int] = Map(3 -> 2, 5 -> 1, 7 -> 1)
 ```
 
+P 35 已经得到了 `List(3, 3, 5, 7)`，借助 `fold` 对其进行转换：
+
+```Scala
+def primeFactorMultiplicity: List[(Int, Int)] =
+  v.primeFactors.foldRight(List.empty[(Int, Int)])((x, ls) ⇒ ls match {
+    case (k, v) :: tl if k == x ⇒ (k, v + 1) :: tl
+    case _                      ⇒ (x, 1) :: ls
+  })
+
+def primeFactorMultiplicityMap: Map[Int, Int] =
+  v.primeFactorMultiplicity.toMap
+```
